@@ -3,8 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\EquipmentRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\Timestampable;
 
 /**
@@ -12,6 +13,7 @@ use Gedmo\Timestampable\Traits\Timestampable;
  */
 class Equipment
 {
+    use Timestampable;
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -25,16 +27,15 @@ class Equipment
     private $name;
 
     /**
-     * @ORM\Column(type="datetime")
-     * @Gedmo\Timestampable(on="create")
+     * @ORM\ManyToMany(targetEntity=Box::class, inversedBy="equipment")
      */
-    private $createdAt;
+    private $box;
 
-    /**
-     * @ORM\Column(type="datetime")
-     * @Gedmo\Timestampable(on="update")
-     */
-    private $updatedAt;
+    public function __construct()
+    {
+        $this->box = new ArrayCollection();
+    }
+
 
     public function getId(): ?int
     {
@@ -53,14 +54,31 @@ class Equipment
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    /**
+     * @return Collection|Box[]
+     */
+    public function getBox(): Collection
     {
-        return $this->createdAt;
+        return $this->box;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function addBox(Box $box): self
     {
-        return $this->updatedAt;
+        if (!$this->box->contains($box)) {
+            $this->box[] = $box;
+        }
+
+        return $this;
     }
+
+    public function removeBox(Box $box): self
+    {
+        if ($this->box->contains($box)) {
+            $this->box->removeElement($box);
+        }
+
+        return $this;
+    }
+    
 
 }
