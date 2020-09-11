@@ -3,7 +3,7 @@
 {% block title %}Hello EquipmentController!{% endblock %}
 
 {% block body %}
-    <a href="{{ path('cart_show') }}">Zobacz koszyk{{ app.session.get('cart')|length}}</a>
+    <a href="{{ path('cart_show') }}">Zobacz koszyk</a>({{ app.session.get('cart')|length}})
     <div class="col-12 d-flex flex-wrap justify-content-between">
 
         {% for box in boxes %}

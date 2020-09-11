@@ -17,12 +17,12 @@ class CartController extends AbstractController
     /**
      * @Route("/showCart", name="cart_show")
      */
-    public function index(SessionInterface $session,BoxRepository $boxRepository)
+    public function index(SessionInterface $session, BoxRepository $boxRepository)
     {
 
-        $cartWithBoxes = $session->get('cart', []);
-$boxes=[];
-        foreach ($cartWithBoxes as $id=>$value) {
+        $cartWithData = $session->get('cart', []);
+        $boxes = [];
+        foreach ($cartWithData as $id => $value) {
             $boxes[] = $boxRepository->find($id);
         }
         return $this->render('cart/index.html.twig', [
