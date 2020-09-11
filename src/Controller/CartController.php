@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Box;
+use App\Entity\Runes;
 use App\Repository\BoxRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -22,6 +23,7 @@ class CartController extends AbstractController
 
         $cartWithData = $session->get('cart', []);
         $boxes = [];
+        dd($cartWithData);
         foreach ($cartWithData as $id => $value) {
             $boxes[] = $boxRepository->find($id);
         }
@@ -38,7 +40,7 @@ class CartController extends AbstractController
     {
         $cart = $session->get('cart', []);
 
-        $cart[$box->getId()] = 1;
+        $cart['box'][$box->getId()] = 1;
 
         $session->set('cart', $cart);
 
@@ -57,6 +59,37 @@ class CartController extends AbstractController
 
         if (!empty($cart[$box->getId()])) {
             unset($cart[$box->getId()]);
+        }
+        $session->set('cart', $cart);
+        return $this->redirectToRoute('cart_show');
+
+    }
+    /**
+     * @Route("/addRunes/{id}",name="add_runes_to_cart")
+     */
+    public function addRunesToCart(Runes $runes, SessionInterface $session)
+    {
+        $cart = $session->get('cart', []);
+
+        $cart['runes'][$runes->getId()] = 1;
+
+        $session->set('cart', $cart);
+
+        return $this->json(
+            $this->generateUrl('show_all_items'), 200
+        );
+
+    }
+
+    /**
+     * @Route("/remove/{id}", name="remove_runes",requirements={"id"="\d+"})
+     */
+    public function removeRunes(Runes $runes, Session $session)
+    {
+        $cart = $session->get('cart', []);
+
+        if (!empty($cart[$runes->getId()])) {
+            unset($cart[$runes->getId()]);
         }
         $session->set('cart', $cart);
         return $this->redirectToRoute('cart_show');

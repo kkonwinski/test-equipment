@@ -3,18 +3,40 @@
 {% block title %}Hello EquipmentController!{% endblock %}
 
 {% block body %}
-    <a href="{{ path('cart_show') }}">Zobacz koszyk</a>({{ app.session.get('cart')|length}})
-    <div class="col-12 d-flex flex-wrap justify-content-between">
+    <a href="{{ path('cart_show') }}">Zobacz koszyk</a>({{ app.session.get('cart')|length }})
+    <ul class="nav nav-tabs">
+        <li class="nav-item"><a data-toggle="tab" class="nav-link active" href="#box">Skrzynki</a></li>
+        <li class="nav-item"><a data-toggle="tab" class="nav-link" href="#runes">Runy</a></li>
+    </ul>
 
-        {% for box in boxes %}
-            <div class="col-3 m-3">
-                <span>{{ box.name }}</span>
-                <div>
-                    <a href="{{ path('add_boxes_to_cart',{'id':box.id }) }}" class="btn btn-info add">Dodaj do
-                        ekwipunku</a>
-                </div>
+    <div class="tab-content">
+        <div id="box" class="tab-pane active">
+            <div class="d-flex flex-wrap justify-content-between">
+                {% for box in boxes %}
+                    <div class="col-3 m-3">
+                        <h3>{{ box.name }}</h3>
+                        <div>
+                            <a href="{{ path('add_boxes_to_cart',{'id':box.id }) }}" class="btn btn-info add">Dodaj do skrzynke
+                                ekwipunku</a>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
+        </div>
+        <div id="runes" class="tab-pane fade ">
+            <div class="d-flex flex-wrap justify-content-between">
+
+                {% for rune in runes %}
+                    <div class="col-3 m-3">
+                        <h3>{{ rune.name }}</h3>
+                        <div>
+                            <a href="{{ path('add_runes_to_cart',{'id':rune.id }) }}" class="btn btn-info add">Dodaj
+                                runy do ekwipunku</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 
 {% endblock %}
