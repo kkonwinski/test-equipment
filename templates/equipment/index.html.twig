@@ -3,13 +3,14 @@
 {% block title %}Hello EquipmentController!{% endblock %}
 
 {% block body %}
+    <a href="{{ path('cart_show') }}">Zobacz koszyk{{ app.session.get('cart')|length}}</a>
     <div class="col-12 d-flex flex-wrap justify-content-between">
 
         {% for box in boxes %}
             <div class="col-3 m-3">
                 <span>{{ box.name }}</span>
                 <div>
-                    <a href="{{ path('add_boxes_to_item',{'id':box.id }) }}" class="btn btn-info add">Dodaj do
+                    <a href="{{ path('add_boxes_to_cart',{'id':box.id }) }}" class="btn btn-info add">Dodaj do
                         ekwipunku</a>
                 </div>
             </div>

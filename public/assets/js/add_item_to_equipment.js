@@ -5,8 +5,12 @@ $(function () {
         $.ajax({
             method: 'POST',
             url: link.attr('href'),
+        }).done(function (data) {
+
+            console.log(window.location.href = data);
+            // window.location.href = data
         })
-        alert("fmdfmdsifmnosdmfo");
-        console.log(link.attr('href'));
+
+
     });
 });

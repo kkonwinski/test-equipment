@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello CartController!{% endblock %}
+
+{% block body %}
+    {% if boxes is empty %}
+        <h1>Koszyk pusty</h1>
+        <a href="{{ path('show_all_items') }}">Przejdx do strony głównej</a>
+    {% else %}
+        <div class="d-flex flex-wrap">
+            {% for box in boxes %}
+                <div class="col-3">
+                    {{ box.id }}
+                    {{ box.name }}
+                    <a href="{{ path('remove_boxes',{'id':box.id }) }}" class="btn  btn-danger">Usuń z
+                        ekwipunku</a>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+{% endblock %}
