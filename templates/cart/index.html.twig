@@ -3,20 +3,47 @@
 {% block title %}Hello CartController!{% endblock %}
 
 {% block body %}
-    {% if boxes is empty %}
+
+    {% if boxes  is empty and runes is empty %}
         <h1>Koszyk pusty</h1>
-        <a href="{{ path('show_all_items') }}">Przejdx do strony głównej</a>
+        <a href="{{ path('show_all_items') }}" class="btn btn-info">Przejdź do strony głównej</a>
+        <a href="{{ path('clear_cart') }}" class="btn btn-danger">Wyczyść cały koszyk</a>
     {% else %}
-        <div class="d-flex flex-wrap">
-            {% for box in boxes %}
-                <div class="col-3">
-                    {{ box.id }}
-                    {{ box.name }}
-                    <a href="{{ path('remove_boxes',{'id':box.id }) }}" class="btn  btn-danger">Usuń z
-                        ekwipunku</a>
+        {% if boxes is not empty %}
+
+            <h2 class="mt-5">Skrzynki</h2>
+            <div class="row">
+
+                <div class="d-flex flex-wrap justify-content-between">
+                    {% for box in boxes %}
+
+                        <div class="col-3">
+                            {{ box.id }}
+                            {{ box.name }}
+                            <a href="{{ path('remove_boxes',{'id':box.id }) }}" class="btn  btn-danger">Usuń skrzynke z
+                                ekwipunku</a>
+                        </div>
+                    {% endfor %}
                 </div>
-            {% endfor %}
-        </div>
+            </div>
+        {% endif %}
+        {% if runes is not empty %}
+
+            <h2 class="mt-5">Runy</h2>
+            <div class="row ">
+                <div class="d-flex flex-wrap justify-content-between">
+                    {% for rune in runes %}
+                        <div class="col-3">
+                            {{ rune.id }}
+                            {{ rune.name }}
+                            <a href="{{ path('remove_runes',{'id':rune.id }) }}" class="btn  btn-danger">Usuń z rune
+                                ekwipunku</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        {% endif %}
     {% endif %}
 
 {% endblock %}

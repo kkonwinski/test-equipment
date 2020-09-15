@@ -3,7 +3,7 @@
 {% block title %}Hello EquipmentController!{% endblock %}
 
 {% block body %}
-    <a href="{{ path('cart_show') }}">Zobacz koszyk</a>({{ app.session.get('cart')|length }})
+    <a href="{{ path('cart_show') }}">Zobacz koszyk</a>({{ countItemsCart }})
     <ul class="nav nav-tabs">
         <li class="nav-item"><a data-toggle="tab" class="nav-link active" href="#box">Skrzynki</a></li>
         <li class="nav-item"><a data-toggle="tab" class="nav-link" href="#runes">Runy</a></li>
@@ -22,6 +22,15 @@
                     </div>
                 {% endfor %}
             </div>
+{#            <div class="container d-flex justify-content-center mt-5">#}
+{#                <div class="row">#}
+{#                    <div class="col-md-12">#}
+{#                        <div class="navigation">#}
+{#                            {{ knp_pagination_render(boxes) }}#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
         </div>
         <div id="runes" class="tab-pane fade ">
             <div class="d-flex flex-wrap justify-content-between">
@@ -36,6 +45,15 @@
                     </div>
                 {% endfor %}
             </div>
+{#            <div class="container d-flex justify-content-center mt-5">#}
+{#                <div class="row">#}
+{#                    <div class="col-md-12">#}
+{#                        <div class="navigation">#}
+{#                            {{ knp_pagination_render(runes) }}#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
         </div>
     </div>
 
