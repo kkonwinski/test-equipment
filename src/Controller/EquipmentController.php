@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Equipment;
 use App\Repository\BoxRepository;
 use App\Repository\RunesRepository;
+use App\Service\AddItemToEquipment;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,5 +39,19 @@ class EquipmentController extends AbstractController
         ]);
     }
 
+    /**
+     * @param Equipment $equipment
+     * @param SessionInterface $session
+     * @param AddItemToEquipment $toEquipment
+     * @Route("/addItemsToEquipment",name="add_items_to_equipment")
+     */
+    public function addToEquipment(SessionInterface $session,AddItemToEquipment $toEquipment)
+    {
+
+$objectItems= $toEquipment->addItemsEquipment($session);
+//        $this->em->persist($product);
+//        $this->em->flush();
+        //    $entityManager = $this->getDoctrine()->getManager();
+}
 
 }

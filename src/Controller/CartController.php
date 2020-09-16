@@ -24,9 +24,6 @@ class CartController extends AbstractController
     {
 
         $cartWithData = $session->get('cart', []);
-        echo "<pre>";
-        var_dump($cartWithData);
-        echo "</pre>";
 
         $boxes = [];
         $runes = [];
