@@ -22,14 +22,13 @@ class EquipmentController extends AbstractController
      * @param BoxRepository $boxRepository
      * @param RunesRepository $runesRepository
      * @param PaginatorInterface $paginator
-     * @param SessionInterface $session
      * @param CartController $cartController
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function showAllItems(BoxRepository $boxRepository, RunesRepository $runesRepository, PaginatorInterface $paginator, SessionInterface $session, CartController $cartController, Request $request)
+    public function showAllItems(BoxRepository $boxRepository, RunesRepository $runesRepository, PaginatorInterface $paginator,  CartController $cartController, Request $request)
     {
-        $countItemsCart = $cartController->countCartElements($session);
+        $countItemsCart = $cartController->countCartElements();
         $allRunes = $runesRepository->findAll();
         $allBoxes = $boxRepository->findAll();
 //        $allBoxes = $paginator->paginate($getAllBoxes, $request->query->getInt('box', 1), 4);
