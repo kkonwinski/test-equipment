@@ -44,6 +44,7 @@ class EquipmentController extends AbstractController
      * @param AddItemToEquipment $toEquipment
      * @param CartController $cartController
      * @Route("/addItemsToEquipment",name="add_items_to_equipment")
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function addToEquipment(AddItemToEquipment $toEquipment, CartController $cartController)
     {
