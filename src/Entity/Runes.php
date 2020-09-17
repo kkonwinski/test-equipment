@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\RunesRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\Timestampable;
 
@@ -25,6 +27,16 @@ class Runes
      */
     private $name;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Equipment::class, mappedBy="runes")
+     */
+    private $equipment;
+
+    public function __construct()
+    {
+        $this->equipment = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -38,6 +50,34 @@ class Runes
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Equipment[]
+     */
+    public function getEquipment(): Collection
+    {
+        return $this->equipment;
+    }
+
+    public function addEquipment(Equipment $equipment): self
+    {
+        if (!$this->equipment->contains($equipment)) {
+            $this->equipment[] = $equipment;
+            $equipment->addRune($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEquipment(Equipment $equipment): self
+    {
+        if ($this->equipment->contains($equipment)) {
+            $this->equipment->removeElement($equipment);
+            $equipment->removeRune($this);
+        }
 
         return $this;
     }

@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Box;
 use App\Entity\Equipment;
 use App\Repository\BoxRepository;
 use App\Repository\RunesRepository;
 use App\Service\AddItemToEquipment;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,18 +42,22 @@ class EquipmentController extends AbstractController
     }
 
     /**
-     * @param Equipment $equipment
-     * @param SessionInterface $session
      * @param AddItemToEquipment $toEquipment
+     * @param CartController $cartController
      * @Route("/addItemsToEquipment",name="add_items_to_equipment")
      */
-    public function addToEquipment(SessionInterface $session,AddItemToEquipment $toEquipment)
+    public function addToEquipment(AddItemToEquipment $toEquipment, CartController $cartController)
     {
+        $equipment = new Equipment();
 
-$objectItems= $toEquipment->addItemsEquipment($session);
-//        $this->em->persist($product);
-//        $this->em->flush();
-        //    $entityManager = $this->getDoctrine()->getManager();
-}
+        $objectItems = $toEquipment->addItemsEquipment($equipment);
 
+
+        if ($objectItems == true) {
+
+            $cartController->clearCart();
+
+        }
+        return $this->redirectToRoute("show_all_items");
+    }
 }

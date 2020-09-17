@@ -4,8 +4,10 @@
 namespace App\Service;
 
 
+use App\Entity\Equipment;
 use App\Repository\BoxRepository;
 use App\Repository\RunesRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 
@@ -16,71 +18,64 @@ class AddItemToEquipment
     private $session;
     private $boxRepository;
     private $runesRepository;
+    private $entityManager;
 
-    public function __construct(SessionInterface $session, BoxRepository $boxRepository, RunesRepository $runesRepository)
+    public function __construct(SessionInterface $session, BoxRepository $boxRepository, RunesRepository $runesRepository, EntityManagerInterface $entityManager)
     {
         $this->session = $session;
-
         $this->boxRepository = $boxRepository;
         $this->runesRepository = $runesRepository;
+        $this->entityManager = $entityManager;
     }
 
 
     /**
-     * @return array
+     * @param Equipment $equipment
      */
-    public function addItemsEquipment()
+    public function addItemsEquipment(Equipment $equipment)
     {
-
         $arrItems = $this->session->get('cart', []);
-        $tmpArr=array();
-        if (!empty($arrItems)) {
-            $arrayItemsIds = $this->mergeItems($arrItems);
-            $tmpArr = array();
-            foreach ($arrayItemsIds as $arrayItemsId) {
-                if (!empty($this->runesRepository->find($arrayItemsId))) {
-                    $tmpArr[] = $this->runesRepository->find($arrayItemsId);
-                } elseif(!empty($this->boxRepository->find($arrayItemsId))) {
-                    $tmpArr[] = $this->boxRepository->find($arrayItemsId);
 
-                }else{
-                    $ex=new \Exception();
-                    $ex->getMessage();
-                    die;
-                }
+        foreach ($arrItems as $type => $items) {
+            switch ($type) {
+                case "box":
+                    $this->addBoxItemsToEquipment($items, $equipment);
+                    break;
+                case "runes":
+                    $this->addRunesItemsToEquipment($items, $equipment);
+                    break;
             }
         }
-       return $tmpArr;
+
+        $this->entityManager->flush();
+
+        return true;
 
     }
 
-    /**
-     * @param array $mergeArrayItems
-     * @return array
-     */
-    public function mergeItems(array $mergeArrayItems)
+    public function addBoxItemsToEquipment($items, $equipment)
     {
-        $tmpArr = array();
-        foreach ($mergeArrayItems as $mergeArrayItem) {
-            foreach ($mergeArrayItem as $id => $value) {
-                $tmpArr[] = $id;
-            }
-        }
+        foreach (array_keys($items) as $boxId) {
+            $boxObject = $this->boxRepository->find($boxId);
 
-        return $tmpArr;
+            $equipment->addBox($boxObject);
+
+            $this->entityManager->persist($equipment);
+        }
 
     }
 
-//    public function addRunesEquipment(array $arrayWihRunesIds)
-//    {
-//        $tmpArr = [];
-//
-//        foreach ($arrayWihRunesIds as $id => $value) {
-//            //   var_dump($arrayWihBoxesId);
-//            $tmpArr[] = $this->runesRepository->find($id);
-//
-//        }
-//        return $tmpArr;
-//
-//    }
+    public function addRunesItemsToEquipment($items, $equipment)
+    {
+
+        foreach (array_keys($items) as $runeId) {
+
+            $runeObject = $this->runesRepository->find($runeId);
+
+            $equipment->addRune($runeObject);
+        }
+        $this->entityManager->persist($equipment);
+
+    }
+
 }

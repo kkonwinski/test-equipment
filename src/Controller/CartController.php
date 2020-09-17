@@ -8,6 +8,7 @@ use App\Entity\Runes;
 use App\Repository\BoxRepository;
 use App\Repository\RunesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,13 +18,21 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class CartController extends AbstractController
 {
+
+    private $session;
+
+    public function __construct(SessionInterface $session)
+    {
+
+        $this->session = $session;
+    }
     /**
      * @Route("/showCart", name="cart_show")
      */
-    public function index(SessionInterface $session, BoxRepository $boxRepository, RunesRepository $runesRepository)
+    public function index(BoxRepository $boxRepository, RunesRepository $runesRepository)
     {
 
-        $cartWithData = $session->get('cart', []);
+        $cartWithData = $this->session->get('cart', []);
 
         $boxes = [];
         $runes = [];
@@ -47,13 +56,12 @@ class CartController extends AbstractController
     /**
      * @Route("/addBoxes/{id}",name="add_boxes_to_cart")
      */
-    public function addBoxesToCart(Box $box, SessionInterface $session)
+    public function addBoxesToCart(Box $box)
     {
-        $cart = $session->get('cart', []);
-
+        $cart = $this->session->get('cart', []);
         $cart['box'][$box->getId()] = 1;
 
-        $session->set('cart', $cart);
+        $this->session->set('cart', $cart);
 
         return $this->json(
             $this->generateUrl('show_all_items'), 200
@@ -64,13 +72,13 @@ class CartController extends AbstractController
     /**
      * @Route("/remove/box/{id}", name="remove_boxes",requirements={"id"="\d+"})
      */
-    public function removeBoxes(Box $box, Session $session)
+    public function removeBoxes(Box $box)
     {
-        $cart = $session->get('cart', []);
+        $cart = $this->session->get('cart', []);
         if (!empty($cart['box'])) {
                 unset($cart['box'][$box->getId()]);
         }
-        $session->set('cart', $cart);
+        $this->session->set('cart', $cart);
 
         return $this->redirectToRoute('cart_show');
 
@@ -79,14 +87,14 @@ class CartController extends AbstractController
     /**
      * @Route("/remove/runes/{id}", name="remove_runes",requirements={"id"="\d+"})
      */
-    public function removeRunes(Runes $runes, Session $session)
+    public function removeRunes(Runes $runes)
     {
-        $cart = $session->get('cart', []);
+        $cart = $this->session->get('cart', []);
         if (!empty($cart['runes'])) {
             unset($cart['runes'][$runes->getId()]);
         }
 
-        $session->set('cart', $cart);
+        $this->session->set('cart', $cart);
 
         return $this->redirectToRoute('cart_show');
 
@@ -95,13 +103,13 @@ class CartController extends AbstractController
     /**
      * @Route("/addRunes/{id}",name="add_runes_to_cart")
      */
-    public function addRunesToCart(Runes $runes, SessionInterface $session)
+    public function addRunesToCart(Runes $runes)
     {
-        $cart = $session->get('cart', []);
+        $cart = $this->session->get('cart', []);
 
         $cart['runes'][$runes->getId()] = 1;
 
-        $session->set('cart', $cart);
+        $this->session->set('cart', $cart);
 
         return $this->json(
             $this->generateUrl('show_all_items'), 200
@@ -112,27 +120,26 @@ class CartController extends AbstractController
     /**
      * @Route("clearCart", name="clear_cart")
      */
-    public function clearCart(Session $session)
+    public function clearCart()
     {
-        $session->remove('cart');
+        $this->session->remove('cart');
         return $this->redirectToRoute('show_all_items');
     }
 
-    /**
-     * @param Session $session
-     * @param Box $box
-     * @Route("/addToEquipment", name="add_to_equipment")
-     */
-    public function addBoxesToEquipment(Session $session, Box $box, Equipment $equipment)
-    {
-        $cart = $session->get('cart', []);
-        dd($cart['box']);
+//    /**
+//     * @param Box $box
+//     * @Route("/addToEquipment", name="add_to_equipment")
+//     */
+//    public function addBoxesToEquipment( Box $box, Equipment $equipment)
+//    {
+//        $cart = $this->session->get('cart', []);
+//        dd($cart['box']);
+//
+//    }
 
-    }
-
-    public function countCartElements(SessionInterface $session)
+    public function countCartElements()
     {
-        $cart = $session->get('cart', []);
+        $cart = $this->session->get('cart', []);
 
         $itemNumber = [];
         foreach ($cart as $item) {

@@ -31,9 +31,15 @@ class Equipment
      */
     private $box;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Runes::class, inversedBy="equipment")
+     */
+    private $runes;
+
     public function __construct()
     {
         $this->box = new ArrayCollection();
+        $this->runes = new ArrayCollection();
     }
 
 
@@ -75,6 +81,32 @@ class Equipment
     {
         if ($this->box->contains($box)) {
             $this->box->removeElement($box);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Runes[]
+     */
+    public function getRunes(): Collection
+    {
+        return $this->runes;
+    }
+
+    public function addRune(Runes $rune): self
+    {
+        if (!$this->runes->contains($rune)) {
+            $this->runes[] = $rune;
+        }
+
+        return $this;
+    }
+
+    public function removeRune(Runes $rune): self
+    {
+        if ($this->runes->contains($rune)) {
+            $this->runes->removeElement($rune);
         }
 
         return $this;
